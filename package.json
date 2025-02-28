@@ -1,0 +1,14 @@
+{
+  "name": "@wulfe/ui",
+  "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wulfe/ui.git"
+  },
+  "bugs": "https://github.com/wulfe/ui/issues",
+  "packageManager": "pnpm@10.5.2",
+  "engines": {
+    "node": ">=20.10.0"
+  }
+}
