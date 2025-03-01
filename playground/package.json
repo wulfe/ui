@@ -1,0 +1,29 @@
+{
+  "name": "@wulfe/ui-playground",
+  "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wulfe/ui.git",
+    "directory": "playground"
+  },
+  "bugs": "https://github.com/wulfe/ui/issues",
+  "type": "module",
+  "scripts": {
+    "vite": "vite",
+    "vite:debug": "vite --debug"
+  },
+  "dependencies": {
+    "@wulfe/ui-components": "workspace:^",
+    "@wulfe/ui-css": "workspace:^",
+    "lit": "catalog:",
+    "tailwindcss": "catalog:"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "catalog:",
+    "vite": "catalog:"
+  },
+  "engines": {
+    "node": ">=20.10.0"
+  }
+}

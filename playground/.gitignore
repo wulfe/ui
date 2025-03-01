@@ -1,0 +1,8 @@
+node_modules/
+dist/
+coverage/
+*.local
+temp/
+*.log
+src/*
+!src/example

@@ -1,0 +1,14 @@
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "@wulfe/ui-css/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@source 'index.html';
+
+:root {
+    --wui-font-family: var(--font-sans);
+    --wui-line-height: 1.5;
+    --wui-focus-ring-color: var(--color-blue-700);
+    --wui-focus-ring-style: dashed;
+}
