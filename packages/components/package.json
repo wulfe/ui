@@ -12,7 +12,9 @@
     "dist"
   ],
   "exports": {
-    ".": "./dist/index.js"
+    ".": "./dist/index.js",
+    "./icon": "./dist/icon.js",
+    "./utilities/*": "./dist/utilities/*.js"
   },
   "type": "module",
   "scripts": {
