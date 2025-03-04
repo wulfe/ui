@@ -16,11 +16,11 @@
   "dependencies": {
     "@wulfe/ui-components": "workspace:^",
     "@wulfe/ui-css": "workspace:^",
-    "lit": "catalog:",
-    "tailwindcss": "catalog:"
+    "tailwindcss": "^4.0",
+    "lit": "catalog:"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "catalog:",
+    "@tailwindcss/vite": "^4.0",
     "vite": "catalog:"
   },
   "engines": {
