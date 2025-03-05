@@ -13,6 +13,7 @@
   ],
   "exports": {
     ".": "./dist/index.js",
+    "./accordion": "./dist/accordion.js",
     "./accordion-item": "./dist/accordion-item.js",
     "./icon": "./dist/icon.js",
     "./utilities/*": "./dist/utilities/*.js"
