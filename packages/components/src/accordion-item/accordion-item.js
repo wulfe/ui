@@ -1,5 +1,6 @@
 import { html, unsafeCSS } from 'lit'
 import { BaseElement } from '../internal/base-element'
+import '../icon'
 import componentStyles from './accordion-item.css?inline'
 
 export class AccordionItem extends BaseElement {
