@@ -16,6 +16,9 @@
     "./accordion": "./dist/accordion.js",
     "./accordion-item": "./dist/accordion-item.js",
     "./icon": "./dist/icon.js",
+    "./tab": "./dist/tab.js",
+    "./tab-group": "./dist/tab-group.js",
+    "./tab-panel": "./dist/tab-panel.js",
     "./utilities/*": "./dist/utilities/*.js"
   },
   "type": "module",

@@ -1,7 +1,13 @@
 import './accordion'
 import './accordion-item'
 import './icon'
+import './tab'
+import './tab-group'
+import './tab-panel'
 
 export { Accordion } from './accordion'
 export { AccordionItem } from './accordion-item'
 export { Icon } from './icon'
+export { Tab } from './tab'
+export { TabGroup } from './tab-group'
+export { TabPanel } from './tab-panel'

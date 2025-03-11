@@ -1,0 +1,8 @@
+:host {
+    cursor: var(--wui-tab-cursor, default);
+    display: inline-flex;
+    align-items: var(--wui-tab-align-items, center);
+    justify-content: var(--wui-tab-justify-content, space-between);
+    gap: var(--wui-tab-gap, 1rem);
+    text-align: var(--wui-tab-text-align, start);
+}
