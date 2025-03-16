@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
     root: './src',
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(),],
     resolve: {
         alias: {
             '@wulfe/ui-components/src': resolve(__dirname, '../packages/components/src'),
