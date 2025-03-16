@@ -1,5 +1,11 @@
 import { WUI } from '../core/consts'
 
+/*
+  Based on Datastar's dom utilities
+  Source: https://github.com/starfederation/datastar/blob/main/library/src/utils/dom.ts
+  License: MIT
+*/
+
 export class Hash {
     #value = 0
     #prefix: string
