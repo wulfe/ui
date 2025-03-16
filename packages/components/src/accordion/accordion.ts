@@ -139,7 +139,13 @@ export class Accordion extends BaseElement {
             const target = event.target as AccordionItem
             const detail = event?.detail
 
+            if (detail.namespace !== 'accordion-item') return
             if (! detail.open) return
+
+            const accordion = target.closest('wui-accordion')
+            if (accordion !== this) return
+
+            if (! this.#accordionItems.includes(target)) return
 
             if (this.multiple || event.defaultPrevented) {
                 return
