@@ -5,3 +5,9 @@ if (! customElements.get('wui-icon')) {
 }
 
 export { Icon }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        'wui-icon': Icon
+    }
+}
