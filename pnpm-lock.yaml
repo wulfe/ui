@@ -27,13 +27,6 @@ importers:
   .: {}
 
   packages/components:
-    dependencies:
-      '@wulfe/ui-css':
-        specifier: workspace:^
-        version: link:../css
-      nanoid:
-        specifier: ^5.1
-        version: 5.1.2
     devDependencies:
       '@types/css-modules':
         specifier: 'catalog:'
@@ -41,6 +34,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 22.13.10
+      '@wulfe/ui-css':
+        specifier: workspace:^
+        version: link:../css
       lit:
         specifier: 'catalog:'
         version: 3.2.1
@@ -531,11 +527,6 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanoid@5.1.2:
-    resolution: {integrity: sha512-b+CiXQCNMUGe0Ri64S9SXFcP9hogjAJ2Rd6GdVxhPLRm7mhGaM7VgOvCAJ1ZshfHbqVDI3uqTI5C8/GaKuLI7g==}
-    engines: {node: ^18 || >=20}
-    hasBin: true
-
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
 
@@ -922,8 +913,6 @@ snapshots:
       lit-html: 3.2.1
 
   nanoid@3.3.8: {}
-
-  nanoid@5.1.2: {}
 
   picocolors@1.1.1: {}
 
