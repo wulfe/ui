@@ -6,3 +6,7 @@
     gap: var(--wui-tab-gap, 1rem);
     text-align: var(--wui-tab-text-align, start);
 }
+
+:host([disabled]) {
+    --wui-tab-cursor: var(--wui-tab-cursor-disabled, not-allowed);
+}

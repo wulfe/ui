@@ -6,9 +6,18 @@ settings:
 
 catalogs:
   default:
+    '@types/css-modules':
+      specifier: ^1.0
+      version: 1.0.5
+    '@types/node':
+      specifier: ^22.13
+      version: 22.13.10
     lit:
       specifier: ^3.2
       version: 3.2.1
+    typescript:
+      specifier: ^5.8
+      version: 5.8.2
     vite:
       specifier: ^6.1
       version: 6.2.0
@@ -26,20 +35,23 @@ importers:
         specifier: ^5.1
         version: 5.1.2
     devDependencies:
+      '@types/css-modules':
+        specifier: 'catalog:'
+        version: 1.0.5
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.13.10
       lit:
         specifier: 'catalog:'
         version: 3.2.1
+      typescript:
+        specifier: 'catalog:'
+        version: 5.8.2
       vite:
         specifier: 'catalog:'
-        version: 6.2.0(jiti@2.4.2)(lightningcss@1.29.1)
+        version: 6.2.0(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.1)
 
   packages/css: {}
-
-  packages/themes:
-    devDependencies:
-      '@wulfe/ui-css':
-        specifier: workspace:^
-        version: link:../css
 
   playground:
     dependencies:
@@ -58,10 +70,19 @@ importers:
     devDependencies:
       '@tailwindcss/vite':
         specifier: ^4.0
-        version: 4.0.9(vite@6.2.0(jiti@2.4.2)(lightningcss@1.29.1))
+        version: 4.0.9(vite@6.2.0(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.1))
+      '@types/css-modules':
+        specifier: 'catalog:'
+        version: 1.0.5
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.13.10
+      typescript:
+        specifier: 'catalog:'
+        version: 5.8.2
       vite:
         specifier: 'catalog:'
-        version: 6.2.0(jiti@2.4.2)(lightningcss@1.29.1)
+        version: 6.2.0(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.1)
 
 packages:
 
@@ -394,8 +415,14 @@ packages:
     peerDependencies:
       vite: ^5.2.0 || ^6
 
+  '@types/css-modules@1.0.5':
+    resolution: {integrity: sha512-oeKafs/df9lwOvtfiXVliZsocFVOexK9PZtLQWuPeuVCFR7jwiqlg60lu80JTe5NFNtH3tnV6Fs/ySR8BUPHAw==}
+
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
+
+  '@types/node@22.13.10':
+    resolution: {integrity: sha512-I6LPUvlRH+O6VRUqYOcMudhaIdUVWfsjnZavnsraHvpBwaEyMN29ry+0UVJhImYL16xsscu0aske3yA+uPOWfw==}
 
   '@types/trusted-types@2.0.7':
     resolution: {integrity: sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==}
@@ -531,6 +558,14 @@ packages:
   tapable@2.2.1:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
     engines: {node: '>=6'}
+
+  typescript@5.8.2:
+    resolution: {integrity: sha512-aJn6wq13/afZp/jT9QZmwEjDqqvSGp1VT5GVg+f/t6/oVyrgXM6BY1h9BRh/O5p3PlUPAe+WuiEZOmb/49RqoQ==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
+  undici-types@6.20.0:
+    resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
 
   vite@6.2.0:
     resolution: {integrity: sha512-7dPxoo+WsT/64rDcwoOjk76XHj+TqNTIvHKcuMQ1k4/SeHDaQt5GFAeLYzrimZrMpn/O6DtdI03WUjdxuPM0oQ==}
@@ -765,15 +800,21 @@ snapshots:
       '@tailwindcss/oxide-win32-arm64-msvc': 4.0.9
       '@tailwindcss/oxide-win32-x64-msvc': 4.0.9
 
-  '@tailwindcss/vite@4.0.9(vite@6.2.0(jiti@2.4.2)(lightningcss@1.29.1))':
+  '@tailwindcss/vite@4.0.9(vite@6.2.0(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.1))':
     dependencies:
       '@tailwindcss/node': 4.0.9
       '@tailwindcss/oxide': 4.0.9
       lightningcss: 1.29.1
       tailwindcss: 4.0.9
-      vite: 6.2.0(jiti@2.4.2)(lightningcss@1.29.1)
+      vite: 6.2.0(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.1)
+
+  '@types/css-modules@1.0.5': {}
 
   '@types/estree@1.0.6': {}
+
+  '@types/node@22.13.10':
+    dependencies:
+      undici-types: 6.20.0
 
   '@types/trusted-types@2.0.7': {}
 
@@ -923,12 +964,17 @@ snapshots:
 
   tapable@2.2.1: {}
 
-  vite@6.2.0(jiti@2.4.2)(lightningcss@1.29.1):
+  typescript@5.8.2: {}
+
+  undici-types@6.20.0: {}
+
+  vite@6.2.0(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.1):
     dependencies:
       esbuild: 0.25.0
       postcss: 8.5.3
       rollup: 4.34.9
     optionalDependencies:
+      '@types/node': 22.13.10
       fsevents: 2.3.3
       jiti: 2.4.2
       lightningcss: 1.29.1

@@ -5,3 +5,9 @@ if (! customElements.get('wui-accordion')) {
 }
 
 export { Accordion }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        'wui-accordion': Accordion
+    }
+}

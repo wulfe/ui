@@ -19,18 +19,21 @@
     "./tab": "./dist/tab.js",
     "./tab-group": "./dist/tab-group.js",
     "./tab-panel": "./dist/tab-panel.js",
-    "./utilities/*": "./dist/utilities/*.js"
+    "./utils/*": "./dist/utils/*.js"
   },
   "type": "module",
   "scripts": {
-    "vite:build": "vite build"
+    "vite:build": "tsc && vite build"
   },
   "dependencies": {
     "@wulfe/ui-css": "workspace:^",
     "nanoid": "^5.1"
   },
   "devDependencies": {
+    "@types/css-modules": "catalog:",
+    "@types/node": "catalog:",
     "lit": "catalog:",
+    "typescript": "catalog:",
     "vite": "catalog:"
   },
   "engines": {

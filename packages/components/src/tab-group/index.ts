@@ -5,3 +5,9 @@ if (! customElements.get('wui-tab-group')) {
 }
 
 export { TabGroup }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        'wui-tab-group': TabGroup
+    }
+}

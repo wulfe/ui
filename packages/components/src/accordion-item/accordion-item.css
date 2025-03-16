@@ -7,7 +7,12 @@
     display: none;
 }
 
+:host([disabled]) .trigger {
+    cursor: var(--wui-accordion-item-trigger-cursor-disabled, not-allowed);
+}
+
 .trigger {
+    cursor: var(--wui-accordion-item-trigger-cursor, default);
     display: flex;
     align-items: var(--wui-accordion-item-trigger-align-items, center);
     justify-content: var(--wui-accordion-item-trigger-justify-content, space-between);
@@ -23,7 +28,7 @@
     overflow: hidden;
 }
 
-.trigger-icon {
+.icon {
     flex: 0 0 auto;
     display: flex;
     align-items: center;

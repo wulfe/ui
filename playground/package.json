@@ -21,6 +21,9 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0",
+    "@types/css-modules": "catalog:",
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
     "vite": "catalog:"
   },
   "engines": {

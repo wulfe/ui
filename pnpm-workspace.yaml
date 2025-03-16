@@ -3,5 +3,8 @@ packages:
   - playground
 
 catalog:
+  "@types/css-modules": ^1.0
+  "@types/node": ^22.13
   lit: ^3.2
+  typescript: ^5.8
   vite: ^6.1
