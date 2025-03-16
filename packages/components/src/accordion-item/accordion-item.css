@@ -8,7 +8,7 @@
 }
 
 :host([disabled]) .trigger {
-    cursor: var(--wui-accordion-item-trigger-cursor-disabled, not-allowed);
+    --wui-accordion-item-trigger-cursor: var(--wui-accordion-item-trigger-cursor-disabled, not-allowed);
 }
 
 .trigger {
