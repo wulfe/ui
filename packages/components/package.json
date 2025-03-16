@@ -26,8 +26,7 @@
     "vite:build": "tsc && vite build"
   },
   "dependencies": {
-    "@wulfe/ui-css": "workspace:^",
-    "nanoid": "^5.1"
+    "@wulfe/ui-css": "workspace:^"
   },
   "devDependencies": {
     "@types/css-modules": "catalog:",
