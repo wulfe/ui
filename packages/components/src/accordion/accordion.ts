@@ -1,5 +1,5 @@
 import { PropertyValues } from 'lit'
-import { property, queryAssignedElements } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 import { html } from 'lit/static-html.js'
 import type { AccordionItem } from '../accordion-item'
 import { BaseElement } from '../core/base-element'
