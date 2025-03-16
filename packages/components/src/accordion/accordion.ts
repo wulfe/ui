@@ -17,10 +17,6 @@ export class Accordion extends BaseElement {
     /** Allows multiple items to be expanded at the same time */
     @property({ type: Boolean, reflect: true }) multiple = false
 
-    /** Query all assigned accordion items. */
-    @queryAssignedElements( { selector: 'wui-accordion-item' })
-    private _accordionItems!: AccordionItem[]
-
     /**
      * Handles property updates.
      * Ensures correct expansion state when `collapsible` or `multiple` change.
@@ -40,6 +36,42 @@ export class Accordion extends BaseElement {
                 @wui-change="${this.#onChange}"
             ></slot>
         `
+    }
+
+    /**
+     * Retrieves all `wui-accordion-item` elements inside the slot,
+     * while ensuring that nested `wui-accordion` components are ignored.
+     *
+     * This method:
+     * - Queries the `slot` element within the shadow DOM.
+     * - Collects all assigned elements (flattened).
+     * - Recursively traverses child elements to find `wui-accordion-item` components.
+     * - Skips any `wui-accordion` elements to prevent unwanted nesting issues.
+     *
+     * @returns An array of `AccordionItem` elements found within the slot.
+     */
+    get #accordionItems(): AccordionItem[] {
+        const slot = this.shadowRoot?.querySelector('slot')
+        if (! slot) return []
+
+        const assignedNodes = slot.assignedElements({ flatten: true })
+
+        /**
+         * Recursively finds `wui-accordion-item` elements, skipping `wui-accordion` elements.
+         *
+         * @param elements - The elements to search through.
+         * @returns An array of `AccordionItem` elements found.
+         */
+        const findAccordionItems = (elements: Element[]): AccordionItem[] => {
+            return elements.flatMap(el => {
+                const tagName = el.tagName.toLowerCase()
+                if (tagName === 'wui-accordion-item') return el as AccordionItem
+                if (tagName === 'wui-accordion') return []
+                return findAccordionItems(Array.from(el.children))
+            })
+        }
+
+        return findAccordionItems(assignedNodes)
     }
 
     /** Handle slot change, ensuring correct default state. */
@@ -63,26 +95,25 @@ export class Accordion extends BaseElement {
         }
 
         if (['ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
-            const activeItem = this._accordionItems.find((item) => item.matches(':focus'))
-
+            const activeItem = this.#accordionItems.find((item) => item.matches(':focus'))
             let nextItem: HTMLElement | null = null
             let trigger: HTMLElement | null = null
 
             if (activeItem?.tagName.toLowerCase() === 'wui-accordion-item') {
-                const currentIndex = this._accordionItems.findIndex((el) => el === activeItem)
+                const currentIndex = this.#accordionItems.findIndex((el) => el === activeItem)
 
                 switch (e.key) {
                     case 'Home':
-                        nextItem = findNextFocusable(this._accordionItems, currentIndex, 'first')
+                        nextItem = findNextFocusable(this.#accordionItems, currentIndex, 'first')
                         break
                     case 'End':
-                        nextItem = findNextFocusable(this._accordionItems, currentIndex, 'last')
+                        nextItem = findNextFocusable(this.#accordionItems, currentIndex, 'last')
                         break
                     case 'ArrowUp':
-                        nextItem = findNextFocusable(this._accordionItems, currentIndex, 'previous')
+                        nextItem = findNextFocusable(this.#accordionItems, currentIndex, 'previous')
                         break
                     case 'ArrowDown':
-                        nextItem = findNextFocusable(this._accordionItems, currentIndex, 'next')
+                        nextItem = findNextFocusable(this.#accordionItems, currentIndex, 'next')
                         break
                 }
 
@@ -114,7 +145,7 @@ export class Accordion extends BaseElement {
                 return
             }
 
-            const items = [...this._accordionItems] as AccordionItem[]
+            const items = [...this.#accordionItems] as AccordionItem[]
 
             if (items && ! items.length) {
                 return
@@ -141,27 +172,27 @@ export class Accordion extends BaseElement {
      */
     #handleDefaultExpandedItems() {
         if (this.multiple) {
-            this._accordionItems.forEach(item => item._collapsible = true)
+            this.#accordionItems.forEach(item => item._collapsible = true)
         } else {
             // Ensure `collapsible` is respected.
             if (this.collapsible) {
-                this._accordionItems.forEach(item => item._collapsible = true)
+                this.#accordionItems.forEach(item => item._collapsible = true)
             }
 
-            if (this._accordionItems.filter(item => item.hasAttribute('open')).length) {
+            if (this.#accordionItems.filter(item => item.hasAttribute('open')).length) {
                 // Keep only the first open item (if `collapsible` is false).
                 if (! this.collapsible) {
-                    this._accordionItems.filter(item => item.hasAttribute('open'))[0]._collapsible = false
+                    this.#accordionItems.filter(item => item.hasAttribute('open'))[0]._collapsible = false
                 }
 
-                this._accordionItems.filter(item => item.hasAttribute('open')).slice(1).forEach(item => {
+                this.#accordionItems.filter(item => item.hasAttribute('open')).slice(1).forEach(item => {
                     item.expanded = false
                 })
             } else {
                 if (! this.collapsible) {
                     // Open the first item by default if none are open.
-                    this._accordionItems[0].expanded = true
-                    this._accordionItems[0]._collapsible = false
+                    this.#accordionItems[0].expanded = true
+                    this.#accordionItems[0]._collapsible = false
                 }
             }
         }
