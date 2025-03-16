@@ -3,6 +3,7 @@ import { property, state } from 'lit/decorators.js'
 import { html, unsafeStatic } from 'lit/static-html.js'
 import { BaseElement } from '../core/base-element'
 import { HeadingLevel } from '../core/types'
+import '../icon'
 import { getHeadingTag, validateHeadingLevel } from '../utils/heading'
 import { generateMods } from '../utils/mods'
 import styles from './accordion-item.css?inline'
@@ -199,12 +200,10 @@ export class AccordionItem extends BaseElement {
         return html`
             <span part="${generateMods('icon', this.#state)}" class="icon">
                 <slot name="expand-icon">
-                    &plus;
-                    <!-- <wui-icon name="chevron-down" library="wui-system"></wui-icon> -->
+                    <wui-icon name="chevron-down" library="wui-system"></wui-icon>
                 </slot>
                 <slot name="collapse-icon">
-                    &minus;
-                    <!-- <wui-icon name="chevron-up" library="wui-system"></wui-icon> -->
+                    <wui-icon name="chevron-up" library="wui-system"></wui-icon>
                 </slot>
             </span>
         `
