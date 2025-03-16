@@ -19,7 +19,7 @@
     "./tab": "./dist/tab.js",
     "./tab-group": "./dist/tab-group.js",
     "./tab-panel": "./dist/tab-panel.js",
-    "./utilities/*": "./dist/utilities/*.js"
+    "./utils/*": "./dist/utils/*.js"
   },
   "type": "module",
   "scripts": {
