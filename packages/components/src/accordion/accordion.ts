@@ -31,7 +31,7 @@ export class Accordion extends BaseElement {
         }
     }
 
-    /** Renders the component.*/
+    /** Renders the component. */
     render() {
         return html`
             <slot
@@ -49,7 +49,7 @@ export class Accordion extends BaseElement {
 
     /**
      * Handles keyboard navigation for focus movement.
-     * Supports ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Home, and End.
+     * Supports ArrowUp, ArrowDown, Home, and End.
      */
     #handleKeyDown(e: KeyboardEvent) {
         const target = e.target as HTMLElement | null

@@ -92,7 +92,7 @@ export class AccordionItem extends BaseElement {
         this.queueEvents()
     }
 
-    /** Renders the component.*/
+    /** Renders the component. */
     render() {
         return html`
             ${this.#headerTemplate()}
