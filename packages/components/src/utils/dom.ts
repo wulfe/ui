@@ -1,9 +1,9 @@
 import { WUI } from '../core/consts'
 
-/*
-  Based on Datastar's dom utilities
-  Source: https://github.com/starfederation/datastar/blob/main/library/src/utils/dom.ts
-  License: MIT
+/**
+ * Based on Datastar's dom utilities
+ * Source: https://github.com/starfederation/datastar/blob/main/library/src/utils/dom.ts
+ * License: MIT
 */
 
 export class Hash {
@@ -59,4 +59,25 @@ export function elUniqId(el: Element) {
 
 export function attrHash(key: number | string, val: number | string) {
     return new Hash().with(key).with(val).value
+}
+
+/**
+ * Get the active element, accounting for Shadow DOM subtrees.
+ * @author Cory LaViska
+ * @see: https://www.abeautifulsite.net/posts/finding-the-active-element-in-a-shadow-root/
+ */
+export function getActiveEl(
+    root: Document | ShadowRoot = document
+): Element | null {
+    const activeEl = root.activeElement
+
+    if (! activeEl) return null
+
+    // If there’s a shadow root, recursively find the active element within it.
+    // If the recursive call returns null, return the active element of the top-level Document.
+    if (activeEl.shadowRoot)
+        return getActiveEl(activeEl.shadowRoot) || document.activeElement
+
+    // If not, we can just return the active element.
+    return activeEl
 }
