@@ -33,7 +33,7 @@ export class Accordion extends BaseElement {
             <slot
                 @slotchange="${this.#handleSlotChange}"
                 @keydown="${this.#handleKeyDown}"
-                @wui-change="${this.#onChange}"
+                @wui-show="${this.#onChange}"
             ></slot>
         `
     }
@@ -140,7 +140,6 @@ export class Accordion extends BaseElement {
             const detail = event?.detail
 
             if (detail.namespace !== 'accordion-item') return
-            if (! detail.open) return
 
             const accordion = target.closest('wui-accordion')
             if (accordion !== this) return
