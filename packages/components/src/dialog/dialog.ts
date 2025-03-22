@@ -295,8 +295,6 @@ export class Dialog extends BaseElement {
         // Add the dialog to the openDialogs array.
         openDialogs.push(this)
 
-        console.debug('Dialog opened:', this.id, 'openDialogs:', openDialogs.map(d => d.id))
-
         // Remove all previous inerts.
         openDialogs.forEach((dialog) => {
             dialog.#inertElements.forEach((element) => element.removeAttribute('inert'))
@@ -429,8 +427,6 @@ export class Dialog extends BaseElement {
             this.style.removeProperty('--wui-dialog-level')
             this.style.removeProperty('--wui-dialog-offset')
         }
-
-        console.debug('Dialog closed:', this.id, 'openDialogs:', openDialogs.map(d => d.id))
 
         // Update the level and offset of open dialogs.
         this.#updateLevelAndOffset()
