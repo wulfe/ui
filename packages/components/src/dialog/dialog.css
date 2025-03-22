@@ -1,0 +1,60 @@
+:host {
+    visibility: hidden;
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--wui-dialog-index, 100) + (var(--wui-dialog-level, 1) * 10));
+}
+
+:host([open]) {
+    visibility: visible;
+}
+
+:host([scrollable]) .dialog {
+    max-block-size: 100%;
+}
+
+:host([scrollable]) .dialog .body {
+    overflow-y: auto;
+}
+
+.backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--wui-dialog-index, 110) + (var(--wui-dialog-level, 1) * 10) + 10);
+    padding-block-start: var(--wui-dialog-spacing-top, var(--wui-dialog-spacing-block, var(--wui-dialog-spacing, 8rem)));
+    padding-block-end: var(--wui-dialog-spacing-bottom, var(--wui-dialog-spacing-block, var(--wui-dialog-spacing, 2rem)));
+    padding-inline-start: var(--wui-dialog-spacing-left, var(--wui-dialog-spacing-inline, var(--wui-dialog-spacing, 2rem)));
+    padding-inline-end: var(--wui-dialog-spacing-right, var(--wui-dialog-spacing-inline, var(--wui-dialog-spacing, 2rem)));
+    overflow-y: auto;
+    background-color: var(--wui-dialog-backdrop, rgba(0, 0, 0, 0.4));
+}
+
+.dialog {
+    outline-color: transparent;
+    position: relative;
+    z-index: calc(var(--wui-dialog-index, 120) + (var(--wui-dialog-level, 1) * 10) + 20);
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    inline-size: 100%;
+    max-inline-size: var(--wui-dialog-width, 48rem);
+    color: var(--wui-dialog-text, inherit);
+    background-color: var(--wui-dialog-background, white);
+}
+
+.header {
+    display: flex;
+}
+
+.header-actions {
+    align-self: start;
+    flex: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: end;
+    margin-inline-start: auto;
+}
+
+.body {
+    flex: 1;
+}

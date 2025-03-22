@@ -9,6 +9,7 @@ export default defineConfig({
                 'index': resolve(__dirname, 'src/index.ts'),
                 'accordion': resolve(__dirname, 'src/accordion/index.ts'),
                 'accordion-item': resolve(__dirname, 'src/accordion-item/index.ts'),
+                'dialog': resolve(__dirname, 'src/dialog/index.ts'),
                 'icon': resolve(__dirname, 'src/icon/index.ts'),
                 'tab': resolve(__dirname, 'src/tab/index.ts'),
                 'tab-group': resolve(__dirname, 'src/tab-group/index.ts'),

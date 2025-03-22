@@ -15,6 +15,7 @@
     ".": "./dist/index.js",
     "./accordion": "./dist/accordion.js",
     "./accordion-item": "./dist/accordion-item.js",
+    "./dialog": "./dist/dialog.js",
     "./icon": "./dist/icon.js",
     "./tab": "./dist/tab.js",
     "./tab-group": "./dist/tab-group.js",
