@@ -78,14 +78,15 @@ export class AccordionItem extends BaseElement {
      * @param _changedProperties - A map of changed properties and their previous values.
      */
     handleUpdated(_changedProperties: PropertyValues) {
-        if (_changedProperties.has('expanded') || _changedProperties.has('disabled')) {
+        if (_changedProperties.has('expanded')) {
             this.addEvent({
-                name: 'change',
-                detail: {
-                    open: this.expanded,
-                    disabled: this.disabled,
-                    collapsible: this.collapsible,
-                },
+                name: this.expanded ? 'show' : 'hide',
+            })
+        }
+
+        if (_changedProperties.has('disabled')) {
+            this.addEvent({
+                name: this.disabled ? 'disable' : 'enable',
             })
         }
 
@@ -107,14 +108,14 @@ export class AccordionItem extends BaseElement {
     }
 
     /** Opens the accordion item. */
-    open() {
+    show() {
         if (! this.collapsible) return
         if (this.expanded) return
         this.expanded = true
     }
 
     /** Closes the accordion item. */
-    close() {
+    hide() {
         if (! this.collapsible) return
         if (! this.expanded) return
         this.expanded = false
