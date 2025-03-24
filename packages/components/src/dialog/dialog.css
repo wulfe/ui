@@ -1,12 +1,17 @@
 :host {
-    visibility: hidden;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     position: fixed;
     inset: 0;
     z-index: calc(var(--wui-dialog-index, 100) + (var(--wui-dialog-level, 1) * 10));
+    inline-size: 100vw;
+    block-size: 100dvh;
 }
 
 :host([open]) {
-    visibility: visible;
+    display: flex;
 }
 
 :host([scrollable]) .dialog {
@@ -21,21 +26,40 @@
     position: fixed;
     inset: 0;
     z-index: calc(var(--wui-dialog-index, 110) + (var(--wui-dialog-level, 1) * 10) + 10);
+    inline-size: 100vw;
+    block-size: 100vh;
+    background-color: var(--wui-dialog-backdrop, rgba(0, 0, 0, 0.4));
+}
+
+.wrapper {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--wui-dialog-index, 110) + (var(--wui-dialog-level, 1) * 10) + 20);
+    inline-size: 100vw;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
     padding-block-start: var(--wui-dialog-spacing-top, var(--wui-dialog-spacing-block, var(--wui-dialog-spacing, 8rem)));
     padding-block-end: var(--wui-dialog-spacing-bottom, var(--wui-dialog-spacing-block, var(--wui-dialog-spacing, 2rem)));
     padding-inline-start: var(--wui-dialog-spacing-left, var(--wui-dialog-spacing-inline, var(--wui-dialog-spacing, 2rem)));
     padding-inline-end: var(--wui-dialog-spacing-right, var(--wui-dialog-spacing-inline, var(--wui-dialog-spacing, 2rem)));
+    inline-size: 100%;
+    block-size: 100%;
+    min-block-size: 100%;
+    overflow: hidden;
     overflow-y: auto;
-    background-color: var(--wui-dialog-backdrop, rgba(0, 0, 0, 0.4));
 }
 
 .dialog {
     outline-color: transparent;
     position: relative;
-    z-index: calc(var(--wui-dialog-index, 120) + (var(--wui-dialog-level, 1) * 10) + 20);
+    z-index: calc(var(--wui-dialog-index, 120) + (var(--wui-dialog-level, 1) * 10) + 30);
     display: flex;
     flex-direction: column;
-    margin: auto;
     inline-size: 100%;
     max-inline-size: var(--wui-dialog-width, 48rem);
     color: var(--wui-dialog-text, inherit);

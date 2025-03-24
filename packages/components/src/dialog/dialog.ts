@@ -76,11 +76,17 @@ export class Dialog extends BaseElement {
         }
     }
 
-    /** Reference to the dialog's main container element. */
-    @query('.dialog') _dialogElement!: HTMLElement
-
     /** Reference to the backdrop element. */
     @query('.backdrop') _backdropElement!: HTMLElement
+
+    /** Reference to the wrapper element. */
+    @query('.wrapper') _wrapperElement!: HTMLElement
+
+    /** Reference to the container element. */
+    @query('.container') _containerElement!: HTMLElement
+
+    /** Reference to the dialog element. */
+    @query('.dialog') _dialogElement!: HTMLElement
 
     /** Array to store elements that should be made inert when the dialog is open. */
     #inertElements: HTMLElement[] = []
@@ -180,21 +186,23 @@ export class Dialog extends BaseElement {
     /** Renders the component. */
     render() {
         return html`
-            <div
-                part="${generateMods('backdrop', this.#state)}"
-                class="backdrop"
-                @click="${this.#onBackdropClick}"
-            >
+            <div part="${generateMods('backdrop', this.#state)}" class="backdrop"></div>
+            <div part="${generateMods('wrapper', this.#state)}" class="wrapper">
                 <div
-                    part="${generateMods('dialog', this.#state)}"
-                    class="dialog"
-                    role="document"
-                    tabindex="0"
-                    @keydown="${this.#handleKeyDown}"
+                    part="${generateMods('container', this.#state)}" class="container"
+                    @click="${this.#onBackdropClick}"
                 >
-                    ${this.#renderHeaderTemplate()}
-                    ${this.#renderBodyTemplate()}
-                    ${this.#renderFooterTemplate()}
+                    <div
+                        part="${generateMods('dialog', this.#state)}"
+                        class="dialog"
+                        role="document"
+                        tabindex="0"
+                        @keydown="${this.#handleKeyDown}"
+                    >
+                        ${this.#renderHeaderTemplate()}
+                        ${this.#renderBodyTemplate()}
+                        ${this.#renderFooterTemplate()}
+                    </div>
                 </div>
             </div>
         `
@@ -311,7 +319,6 @@ export class Dialog extends BaseElement {
         // Execute focus and setup tasks after the next microtask to ensure the dialog is fully rendered.
         queueMicrotask(() => {
             this.#focusFirstElement()
-            this.#setupDataCloseElements()
             this.#updateLevelAndOffset()
         })
     }
@@ -386,7 +393,7 @@ export class Dialog extends BaseElement {
     /** Handles clicks on the backdrop element. */
     #onBackdropClick(event: MouseEvent) {
         // Only close if clicking directly on the backdrop (not its children).
-        if (this.dismissable && event.target === this._backdropElement) {
+        if (this.dismissable && event.target === this._containerElement) {
             this.hide()
         }
     }
@@ -421,12 +428,7 @@ export class Dialog extends BaseElement {
     /** Cleans up the dialog's state after it is closed. */
     #cleanupAfterClose() {
         // Remove the dialog from the openDialogs array and remove the CSS variables.
-        const index = openDialogs.indexOf(this)
-        if (index !== -1) {
-            openDialogs.splice(index, 1)
-            this.style.removeProperty('--wui-dialog-level')
-            this.style.removeProperty('--wui-dialog-offset')
-        }
+        this.#removeClosingDialog()
 
         // Update the level and offset of open dialogs.
         this.#updateLevelAndOffset()
@@ -477,7 +479,17 @@ export class Dialog extends BaseElement {
         }
     }
 
-    // Update the level and offset of each open dialog.
+    /** Remove the dialog from the openDialogs array and remove the CSS variables. */
+    #removeClosingDialog() {
+        const index = openDialogs.indexOf(this)
+        if (index !== -1) {
+            openDialogs.splice(index, 1)
+            this.style.removeProperty('--wui-dialog-level')
+            this.style.removeProperty('--wui-dialog-offset')
+        }
+    }
+
+    /** Update the level and offset of each open dialog. */
     #updateLevelAndOffset() {
         openDialogs.forEach((el, index) => {
             const level = index + 1
