@@ -28,16 +28,12 @@
 }
 
 .wrapper {
-    position: fixed;
-    inset: 0;
-    z-index: calc(var(--wui-dialog-index, 110) + (var(--wui-dialog-level, 1) * 10) + 20);
-}
-
-.container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: start;
+    position: relative;
+    z-index: calc(var(--wui-dialog-index, 110) + (var(--wui-dialog-level, 1) * 10) + 20);
     padding-block-start: var(--wui-dialog-spacing-top, var(--wui-dialog-spacing-block, var(--wui-dialog-spacing, 8rem)));
     padding-block-end: var(--wui-dialog-spacing-bottom, var(--wui-dialog-spacing-block, var(--wui-dialog-spacing, 2rem)));
     padding-inline-start: var(--wui-dialog-spacing-left, var(--wui-dialog-spacing-inline, var(--wui-dialog-spacing, 2rem)));
