@@ -237,7 +237,10 @@ export class Dialog extends BaseElement {
                 <slot name="header-actions"></slot>
                 ${this.dismissable ? html`
                     <button part="${generateMods('header-close', this.#state)}" class="header-close" type="button" @click="${this.hide}">
-                        <wui-icon name="x" library="wui-system" label="Close dialog"></<wui-icon>
+                        <slot name="header-close-label"></slot>
+                        <slot name="header-close-icon">
+                            <wui-icon name="x" library="wui-system" label="Close dialog"></<wui-icon>
+                        </slot>
                     </button>
                 ` : ''}
             </div>
