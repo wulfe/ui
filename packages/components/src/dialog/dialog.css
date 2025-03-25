@@ -6,8 +6,6 @@
     position: fixed;
     inset: 0;
     z-index: calc(var(--wui-dialog-index, 100) + (var(--wui-dialog-level, 1) * 10));
-    inline-size: 100vw;
-    block-size: 100dvh;
 }
 
 :host([open]) {
@@ -26,8 +24,6 @@
     position: fixed;
     inset: 0;
     z-index: calc(var(--wui-dialog-index, 110) + (var(--wui-dialog-level, 1) * 10) + 10);
-    inline-size: 100vw;
-    block-size: 100vh;
     background-color: var(--wui-dialog-backdrop, rgba(0, 0, 0, 0.4));
 }
 
@@ -35,7 +31,6 @@
     position: fixed;
     inset: 0;
     z-index: calc(var(--wui-dialog-index, 110) + (var(--wui-dialog-level, 1) * 10) + 20);
-    inline-size: 100vw;
 }
 
 .container {
@@ -50,7 +45,7 @@
     inline-size: 100%;
     block-size: 100%;
     min-block-size: 100%;
-    overflow: hidden;
+    overflow-x: hidden;
     overflow-y: auto;
 }
 

@@ -97,6 +97,8 @@ export class Dialog extends BaseElement {
     /** Array to store elements with `data-dialog-close` attribute. */
     #dataCloseElements: HTMLElement[] = []
 
+    #isTransitioning = false
+
     /** Listener for document-level keydown events (specifically for Esc key). */
     static #documentKeydownListener: ((e: KeyboardEvent) => void) | null = null
     static #listenerCount: number = 0 // Track how many dialog instances exist
@@ -172,7 +174,9 @@ export class Dialog extends BaseElement {
             if (this.open) {
                 this.#handleShow()
             } else {
-                this.#handleHide()
+                if (! this.#isTransitioning) {
+                    this.#handleHide()
+                }
             }
 
             this.addEvent({
@@ -186,17 +190,17 @@ export class Dialog extends BaseElement {
     /** Renders the component. */
     render() {
         return html`
-            <div part="${generateMods('backdrop', this.#state)}" class="backdrop"></div>
+            <div part="${generateMods('backdrop', this.#state)}" class="backdrop" tabindex="-1"></div>
             <div part="${generateMods('wrapper', this.#state)}" class="wrapper">
                 <div
                     part="${generateMods('container', this.#state)}" class="container"
+                    tabindex="0"
                     @click="${this.#onBackdropClick}"
                 >
                     <div
                         part="${generateMods('dialog', this.#state)}"
                         class="dialog"
                         role="document"
-                        tabindex="0"
                         @keydown="${this.#handleKeyDown}"
                     >
                         ${this.#renderHeaderTemplate()}
@@ -217,7 +221,8 @@ export class Dialog extends BaseElement {
     /** Closes the dialog. */
     hide() {
         if (! this.open) return
-        this.open = false
+        // this.open = false
+        this.#handleHide()
     }
 
     /** Gets the current heading level. */
@@ -295,8 +300,101 @@ export class Dialog extends BaseElement {
         `
     }
 
+    #onTransitionEnd(node) {
+        return Promise.allSettled(
+            node.getAnimations().map(animation => animation.finished)
+        )
+    }
+
+    async #waitForEnterTransitions() {
+        const elements = this.#getTransitionableElements()
+
+        console.debug(elements)
+
+        if (elements.length === 0) {
+            console.debug('No elements found for transition.');
+            this.#handleShowAfter() // Fallback if no elements to transition
+            return
+        }
+
+        console.debug(`Waiting for transitions on ${elements.length} elements`);
+
+        try {
+            const animations = elements.flatMap(el => el.getAnimations());
+
+            if (animations.length === 0) {
+                console.debug('No active animations detected.');
+                this.#handleShowAfter();
+                return;
+            }
+
+            await Promise.allSettled(elements.map(el => this.#onTransitionEnd(el)))
+            this.#handleShowAfter() // Ensures it's called after all transitions
+        } catch (error) {
+            console.error('Transition error:', error)
+        }
+    }
+
+    async #waitForLeaveTransitions() {
+        const elements = this.#getTransitionableElements()
+
+        console.debug(elements)
+
+        if (elements.length === 0) {
+            console.debug('No elements found for transition.');
+            this.#handleHideAfter() // Fallback if no elements to transition
+            return
+        }
+
+        console.debug(`Waiting for transitions on ${elements.length} elements`);
+
+        try {
+            const animations = elements.flatMap(el => el.getAnimations());
+
+            if (animations.length === 0) {
+                console.debug('No active animations detected.');
+                this.#handleHideAfter();
+                return;
+            }
+
+            await Promise.allSettled(elements.map(el => this.#onTransitionEnd(el)))
+            this.#handleHideAfter() // Ensures it's called after all transitions
+        } catch (error) {
+            console.error('Transition error:', error)
+        }
+    }
+
+    #handleShowAfter() {
+        this.classList.remove('wui-on-transition-enter', 'wui-on-transition-enter-end')
+
+        this.#focusFirstElement()
+
+        console.debug('end', 'handleShowAfter()')
+    }
+
+    #handleHideAfter() {
+        this.classList.remove('wui-on-transition-leave', 'wui-on-transition-leave-end')
+        this.open = false
+
+        // Clean up and restore the state after the dialog is closed.
+        this.#cleanupAfterClose()
+
+        console.debug('end', 'handleHideAfter()')
+    }
+
     /** Handles the dialog's open state. */
-    #handleShow() {
+    async #handleShow() {
+        if (this.#isTransitioning) return
+        this.#isTransitioning = true
+
+        console.debug('start', 'handleShow()')
+
+        this.classList.add('wui-on-transition-enter', 'wui-on-transition-enter-start')
+        this.offsetHeight
+
+        // Prevent scrolling on the document body to avoid content shifting.
+        document.body.style.overflow = 'hidden'
+
         // Store the element that had focus before the dialog was opened, for later restoration.
         this.#lastFocusedElement = getActiveEl() as HTMLElement
 
@@ -313,20 +411,46 @@ export class Dialog extends BaseElement {
         this.#inertElements = this.#getElementsToInert()
         this.#inertElements.forEach((element) => element.setAttribute('inert', ''))
 
-        // Prevent scrolling on the document body to avoid content shifting.
-        document.body.style.overflow = 'hidden'
+        this.#updateLevelAndOffset()
 
-        // Execute focus and setup tasks after the next microtask to ensure the dialog is fully rendered.
-        queueMicrotask(() => {
-            this.#focusFirstElement()
-            this.#updateLevelAndOffset()
+        requestAnimationFrame(() => {
+            this.classList.remove('wui-on-transition-enter-start')
+            this.classList.add('wui-on-transition-enter-end')
+
+            // Wait for all transitions *outside* requestAnimationFrame.
+            this.#waitForEnterTransitions()
+                .then(() => {
+                    this.#isTransitioning = false // Reset flag after transition completes
+                })
         })
     }
 
     /** Handles the dialog's closed state. */
-    #handleHide() {
-        // Clean up and restore the state after the dialog is closed.
-        this.#cleanupAfterClose()
+    async #handleHide() {
+        if (this.#isTransitioning) return
+        this.#isTransitioning = true
+
+        console.debug('start', 'handleHide()')
+
+        this.classList.add('wui-on-transition-leave', 'wui-on-transition-leave-start')
+        this.offsetHeight
+
+        // Remove the dialog from the openDialogs array and remove the CSS variables.
+        this.#removeClosingDialog()
+
+        // Update the level and offset of open dialogs.
+        this.#updateLevelAndOffset()
+
+        requestAnimationFrame(() => {
+            this.classList.remove('wui-on-transition-leave-start')
+            this.classList.add('wui-on-transition-leave-end')
+
+            // Wait for all transitions *outside* requestAnimationFrame.
+            this.#waitForLeaveTransitions()
+                .then(() => {
+                    this.#isTransitioning = false // Reset flag after transition completes
+                })
+        })
     }
 
     /** Gets elements to make inert when dialog opens. */
@@ -427,12 +551,6 @@ export class Dialog extends BaseElement {
 
     /** Cleans up the dialog's state after it is closed. */
     #cleanupAfterClose() {
-        // Remove the dialog from the openDialogs array and remove the CSS variables.
-        this.#removeClosingDialog()
-
-        // Update the level and offset of open dialogs.
-        this.#updateLevelAndOffset()
-
         // Remove inerts from the closed dialog.
         this.#inertElements.forEach((element) => element.removeAttribute('inert'))
         this.#inertElements = []
@@ -475,7 +593,7 @@ export class Dialog extends BaseElement {
             autofocusElements[0].focus()
         } else {
             // If no autofocus element, focus the dialog itself.
-            this._dialogElement.focus()
+            this._containerElement.focus()
         }
     }
 
@@ -502,5 +620,15 @@ export class Dialog extends BaseElement {
     /** Gets an array of focusable elements within the dialog. */
     get #focusableElements() {
         return tabbable(this._dialogElement, { getShadowRoot: true }) as HTMLElement[]
+    }
+
+    #getTransitionableElements(): HTMLElement[] {
+        const shadowRoot = this.shadowRoot
+        if (! shadowRoot) return []
+
+        return [
+            shadowRoot.querySelector('.backdrop') as HTMLElement,
+            shadowRoot.querySelector('.dialog') as HTMLElement,
+        ].filter(el => el !== null) // Filter out nulls in case an element isn’t found
     }
 }
