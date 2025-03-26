@@ -27,6 +27,13 @@ importers:
   .: {}
 
   packages/components:
+    dependencies:
+      lit:
+        specifier: 'catalog:'
+        version: 3.2.1
+      tabbable:
+        specifier: ^6.2
+        version: 6.2.0
     devDependencies:
       '@types/css-modules':
         specifier: 'catalog:'
@@ -37,12 +44,6 @@ importers:
       '@wulfe/ui-css':
         specifier: workspace:^
         version: link:../css
-      lit:
-        specifier: 'catalog:'
-        version: 3.2.1
-      tabbable:
-        specifier: ^6.2
-        version: 6.2.0
       typescript:
         specifier: 'catalog:'
         version: 5.8.2
