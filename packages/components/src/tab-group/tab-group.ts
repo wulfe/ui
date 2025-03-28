@@ -169,10 +169,15 @@ export class TabGroup extends BaseElement {
      */
     #handleClick(event: MouseEvent) {
         const target = event.target as HTMLElement
-        if (target.hasAttribute('disabled')) return
 
-        if (target && target.tagName.toLowerCase() === 'wui-tab' && target !== this.selectedTab) {
-            this.#updateSelectedTab(target)
+        // Traverse up the DOM tree to find if the target or its parents are within a `wui-tab`.
+        const tab = target.closest('wui-tab') as Element | null
+
+        if (! tab) return
+        if (tab.hasAttribute('disabled')) return
+
+        if (tab !== this.selectedTab) {
+            this.#updateSelectedTab(tab)
         }
     }
 
