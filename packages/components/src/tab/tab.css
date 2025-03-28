@@ -1,5 +1,6 @@
 :host {
     cursor: var(--wui-tab-cursor, default);
+    pointer-events: auto;
     display: inline-flex;
     align-items: var(--wui-tab-align-items, center);
     justify-content: var(--wui-tab-justify-content, space-between);
