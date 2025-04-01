@@ -220,11 +220,13 @@ export class Dialog extends BaseElement {
         return html`
             ${this.withHeader ? html`
                 <div part="${generateMods('header', this.#state)}" class="header">
-                    <${headingTag} part="${generateMods('heading', this.#state)}" class="heading">
-                        ${this.heading}
-                    </${headingTag}>
+                    <slot name="header">
+                        <${headingTag} part="${generateMods('heading', this.#state)}" class="heading">
+                            ${this.heading}
+                        </${headingTag}>
 
-                    ${this.#renderHeaderActionsTemplate()}
+                        ${this.#renderHeaderActionsTemplate()}
+                    </slot>
                 </div>
             ` : ''}
         `
