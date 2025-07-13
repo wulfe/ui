@@ -4,12 +4,14 @@
  * @param elements - The complete list of elements.
  * @param currentIndex - The index of the currently focused element.
  * @param direction - The direction to search ('next' or 'previous').
+ * @param wrap - Whether to wrap around at the ends (default: true).
  * @returns The next focusable element, or loops to the start/end if none is found.
  */
 export function findNextFocusable(
     elements: HTMLElement[],
     currentIndex: number,
-    direction: 'next' | 'previous' | 'first' | 'last'
+    direction: 'next' | 'previous' | 'first' | 'last',
+    wrap: boolean = true,
 ): HTMLElement | null {
     if (! elements.length) return null
 
@@ -31,6 +33,11 @@ export function findNextFocusable(
 
         // Move to the next element in the given direction
         nextIndex += iterator
+    }
+
+    // If no valid element is found and wrap is disabled, return null
+    if (!wrap) {
+        return null
     }
 
     // If no valid element is found, loop to the first or last focusable element
