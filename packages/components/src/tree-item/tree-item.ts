@@ -24,6 +24,8 @@ export class TreeItem extends BaseElement {
     @state() indeterminate: boolean = false
     @state() selectable: boolean = false
 
+    @state() showCheckbox: boolean = false
+
     @property({ type: Boolean, reflect: true }) expanded = false
     @property({ type: Boolean, reflect: true }) selected = false
     @property({ type: Boolean, reflect: true }) disabled = false
@@ -63,8 +65,12 @@ export class TreeItem extends BaseElement {
             this.setAttribute('aria-expanded', this.expanded ? 'true' : 'false')
         }
 
-        if (this.selectable && (_changedProperties.has('selectable') || _changedProperties.has('selected'))) {
-            this.setAttribute('aria-selected', this.selected ? 'true' : 'false')
+        if (this.selectable && (_changedProperties.has('selectable') || _changedProperties.has('selected') || _changedProperties.has('indeterminate'))) {
+            if (this.indeterminate) {
+                this.setAttribute('aria-selected', 'false')
+            } else {
+                this.setAttribute('aria-selected', this.selected ? 'true' : 'false')
+            }
         }
 
         if (_changedProperties.has('disabled')) {
@@ -102,6 +108,26 @@ export class TreeItem extends BaseElement {
                     `, () => html`
                         <span class="toggle" part="toggle" aria-hidden="true"></span>
                     `)}
+                    ${when(this.showCheckbox, () => html`
+                        <div
+                            class="checkbox-label"
+                            part="checkbox-label"
+                            aria-hidden="true"
+                        >
+                            <input
+                                part="checkbox"
+                                class="checkbox"
+                                type="checkbox"
+                                name
+                                id
+                                .checked="${this.selected}"
+                                .indeterminate="${this.indeterminate}"
+                                @change="${this.#handleCheckboxChange}"
+                                ?disabled="${this.disabled}"
+                                tabindex="-1"
+                            >
+                        </div>
+                    `)}
                     <div class="content" part="${generateMods('content', this.#state)}">
                         <slot></slot>
                     </div>
@@ -123,6 +149,18 @@ export class TreeItem extends BaseElement {
         return items && items.length > 0
     }
 
+    getChildren({ includeDisabled = true }: { includeDisabled?: boolean } = {}): TreeItem[] {
+        const slot = this.shadowRoot?.querySelector<HTMLSlotElement>('slot[name=children]')
+        if (!slot) return []
+
+        const items = slot.assignedElements({ flatten: true })
+        return items.filter(
+            item =>
+                item.tagName.toLowerCase() === 'wui-tree-item' &&
+                (includeDisabled || !(item as TreeItem).disabled)
+        ) as TreeItem[]
+    }
+
     get #state() {
         return {
             'collapsible': this.collapsible,
@@ -136,5 +174,10 @@ export class TreeItem extends BaseElement {
     #toggleExpanded(event: MouseEvent) {
         event.stopPropagation()
         this.expanded = !this.expanded
+    }
+
+    #handleCheckboxChange(event: Event) {
+        event.stopPropagation()
+        this.selected = (event.target as HTMLInputElement).checked
     }
 }

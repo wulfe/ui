@@ -23,17 +23,16 @@ export class Tree extends BaseElement {
 
     static styles = [...BaseElement.styles, unsafeCSS(styles)]
 
-    /** MutationObserver instance to track selected attribute changes. */
     private observer?: MutationObserver
-
-    /** Handler function for the MutationObserver. */
     private handleMutation: MutationCallback
 
     private lastFocusedItem: TreeItem | null = null
     private lastSelection: TreeItem[] = []
 
     @property({ type: String, reflect: true }) selection: 'none' | 'single' | 'multiple' = 'single'
-    @property({ type: String, reflect: true }) strategy: 'strict' | 'leaf' = 'strict'
+    @property({ type: String, reflect: true }) strategy: 'all' | 'leaf' = 'all'
+    @property({ type: Boolean, reflect: true, attribute: 'only-leaf-checkboxes' }) onlyLeafCheckboxes = false
+    @property({ type: Boolean, reflect: true, attribute: 'expand-on-click' }) expandOnClick = false
 
     constructor() {
         super()
@@ -52,6 +51,8 @@ export class Tree extends BaseElement {
                     } else {
                         if (this.selection === 'single' && this.selectedItems.length > 1) {
                             this.#enforceSingleSelection(target)
+                        } else if (this.selection === 'multiple' && this.strategy === 'leaf') {
+                            this.#syncCheckboxes(target)
                         }
 
                         const newSelection = this.selectedItems
@@ -84,9 +85,17 @@ export class Tree extends BaseElement {
         }
     }
 
+    disconnectedCallback() {
+        this.observer?.disconnect()
+        this.observer = undefined
+        super.disconnectedCallback()
+    }
+
     firstUpdated() {
-        this.observer = new MutationObserver(this.handleMutation)
-        this.observer?.observe(this, MutationObserverConfig.observerOptions)
+        if (!this.observer) {
+            this.observer = new MutationObserver(this.handleMutation)
+            this.observer?.observe(this, MutationObserverConfig.observerOptions)
+        }
     }
 
     render() {
@@ -110,7 +119,7 @@ export class Tree extends BaseElement {
 
         this.#selectItem(treeItem)
 
-        if (this.selection === 'none') {
+        if (this.expandOnClick && treeItem.hasChildren) {
             treeItem.expanded = !treeItem.expanded
         }
     }
@@ -173,9 +182,9 @@ export class Tree extends BaseElement {
             }
 
             if (['ArrowLeft'].includes(event.key)) {
-                const parentItem = activeItem?.parentElement?.closest('wui-tree-item') as TreeItem | null
-
                 if (!activeItem) return
+
+                const parentItem = activeItem?.parentElement?.closest('wui-tree-item') as TreeItem | null
 
                 if (activeItem.collapsible && activeItem.expanded) {
                     activeItem.expanded = false
@@ -232,7 +241,22 @@ export class Tree extends BaseElement {
 
     #handleSlotChange() {
         this.#getAllTreeItems().forEach(item => {
-            item.selectable = this.selection !==  'none'
+            item.selectable =
+                this.selection !== 'none' &&
+                !(
+                    this.selection === 'single' &&
+                    this.strategy === 'leaf' &&
+                    item.hasChildren
+                ) &&
+                !(
+                    this.selection === 'multiple' &&
+                    this.strategy === 'leaf' &&
+                    this.onlyLeafCheckboxes &&
+                    item.hasChildren
+                )
+
+            item.showCheckbox = this.selection === 'multiple' &&
+                (!this.onlyLeafCheckboxes || !item.hasChildren)
         })
 
         this.#updateHierarchy()
@@ -257,10 +281,13 @@ export class Tree extends BaseElement {
     }
 
     #selectItem(selectedItem: TreeItem) {
-        if (this.selection === 'none') return
+        if (!selectedItem.selectable || selectedItem.disabled) return
 
         if (this.selection === 'multiple') {
             selectedItem.selected = !selectedItem.selected
+            if (this.strategy === 'leaf') {
+                this.#syncCheckboxes(selectedItem)
+            }
         } else if (this.selection === 'single') {
             this.#enforceSingleSelection(selectedItem)
         }
@@ -298,14 +325,54 @@ export class Tree extends BaseElement {
             item.posinset = posinset
             item.setsize = setsize
 
-            const nestedChildrenSlot = item.shadowRoot?.querySelector('slot[name=children]') as HTMLSlotElement | null
-            const nestedItems = nestedChildrenSlot ?
-                nestedChildrenSlot.assignedElements().filter(el => el.tagName.toLowerCase() === 'wui-tree-item') as TreeItem[] :
-                []
+            const nestedItems = item.getChildren()
 
             if (nestedItems.length > 0) {
                 this.#processTreeItems(nestedItems, currentLevel + 1)
             }
         })
+    }
+
+    #syncCheckboxes(treeItem: TreeItem) {
+        this.#syncDescendantCheckboxes(treeItem, treeItem.selected)
+        this.#syncParentCheckboxes(treeItem)
+        this.#syncAncestorCheckboxes(treeItem)
+    }
+
+    #syncDescendantCheckboxes(treeItem: TreeItem, selected: boolean) {
+        for (const child of treeItem.getChildren({ includeDisabled: false })) {
+            child.selected = selected
+            child.indeterminate = false
+            this.#syncDescendantCheckboxes(child, selected)
+        }
+    }
+
+    #syncAncestorCheckboxes(treeItem: TreeItem) {
+        const parentItem = treeItem.parentElement?.closest('wui-tree-item') as TreeItem | null
+
+        if (parentItem) {
+            this.#syncParentCheckboxes(parentItem)
+            this.#syncAncestorCheckboxes(parentItem)
+        }
+    }
+
+    #syncParentCheckboxes(treeItem: TreeItem) {
+        const children = treeItem.getChildren({ includeDisabled: false })
+
+        if (children.length) {
+            const totalChecked = children.filter(item => item.selected && !item.indeterminate)
+            const totalIndeterminate = children.filter(item => item.indeterminate)
+
+            if (totalChecked.length === children.length) {
+                treeItem.selected = true
+                treeItem.indeterminate = false
+            } else if (totalChecked.length === 0 && totalIndeterminate.length === 0) {
+                treeItem.selected = false
+                treeItem.indeterminate = false
+            } else {
+                treeItem.selected = false
+                treeItem.indeterminate = true
+            }
+        }
     }
 }

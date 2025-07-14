@@ -8,6 +8,7 @@
     outline-style: var(--wui-focus-ring-style, solid);
     outline-color: var(--wui-focus-ring-color, currentColor);
     box-shadow: var(--wui-focus-ring-shadow, none);
+    z-index: 2;
 }
 
 :host(:not([expanded])) .children {
@@ -38,6 +39,7 @@
     align-items: var(--wui-tree-item-align-items, start);
     justify-content: var(--wui-tree-item-justify-content, space-between);
     gap: var(--wui-tree-item-gap, 0);
+    position: relative;
     padding-inline-start: calc((var(--wui-tree-item-level) - 1) * 1.5em);
     inline-size: var(--wui-tree-item-width, 100%);
     text-align: var(--wui-tree-item-text-align, start);
@@ -71,4 +73,12 @@
 
 .children {
     position: relative;
+}
+
+.checkbox-label {
+    margin-inline-end: 0.375rem;
+}
+
+.checkbox {
+    pointer-events: none;
 }
