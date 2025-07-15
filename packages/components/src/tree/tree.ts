@@ -23,6 +23,8 @@ export class Tree extends BaseElement {
 
     static styles = [...BaseElement.styles, unsafeCSS(styles)]
 
+    private isInitialized = false
+
     private observer?: MutationObserver
     private handleMutation: MutationCallback
 
@@ -32,12 +34,13 @@ export class Tree extends BaseElement {
     @property({ type: String, reflect: true }) selection: 'none' | 'single' | 'multiple' = 'single'
     @property({ type: String, reflect: true }) strategy: 'all' | 'leaf' = 'all'
     @property({ type: Boolean, reflect: true, attribute: 'only-leaf-checkboxes' }) onlyLeafCheckboxes = false
-    @property({ type: Boolean, reflect: true, attribute: 'expand-on-click' }) expandOnClick = false
 
     constructor() {
         super()
 
         this.handleMutation = (mutations) => {
+            if (!this.isInitialized) return
+
             for (const mutation of mutations) {
                 if (mutation.attributeName === 'selected') {
                     const target = mutation.target as TreeItem
@@ -91,13 +94,6 @@ export class Tree extends BaseElement {
         super.disconnectedCallback()
     }
 
-    firstUpdated() {
-        if (!this.observer) {
-            this.observer = new MutationObserver(this.handleMutation)
-            this.observer?.observe(this, MutationObserverConfig.observerOptions)
-        }
-    }
-
     render() {
         return html`
             <div
@@ -112,16 +108,12 @@ export class Tree extends BaseElement {
     }
 
     #handleClick(event: Event) {
-        const target = event.target as TreeItem
-        const treeItem = target.closest('wui-tree-item')
+        const target = event.target as HTMLElement
+        const treeItem = target.closest('wui-tree-item') as TreeItem | null
 
         if (! treeItem || treeItem.disabled) return
 
         this.#selectItem(treeItem)
-
-        if (this.expandOnClick && treeItem.hasChildren) {
-            treeItem.expanded = !treeItem.expanded
-        }
     }
 
     #handleKeyDown(event: KeyboardEvent) {
@@ -240,17 +232,22 @@ export class Tree extends BaseElement {
     }
 
     #handleSlotChange() {
+        const leafStrategy =
+            this.strategy === 'all' && this.onlyLeafCheckboxes
+                ? 'leaf'
+                : this.strategy
+
         this.#getAllTreeItems().forEach(item => {
             item.selectable =
                 this.selection !== 'none' &&
                 !(
                     this.selection === 'single' &&
-                    this.strategy === 'leaf' &&
+                    leafStrategy === 'leaf' &&
                     item.hasChildren
                 ) &&
                 !(
                     this.selection === 'multiple' &&
-                    this.strategy === 'leaf' &&
+                    leafStrategy === 'leaf' &&
                     this.onlyLeafCheckboxes &&
                     item.hasChildren
                 )
@@ -259,7 +256,19 @@ export class Tree extends BaseElement {
                 (!this.onlyLeafCheckboxes || !item.hasChildren)
         })
 
+        if (this.selection === 'multiple' && this.strategy === 'leaf' && !this.onlyLeafCheckboxes) {
+            this.selectedItems.forEach(item => this.#syncCheckboxes(item))
+        }
+
         this.#updateHierarchy()
+
+        this.lastSelection = this.selectedItems
+        this.isInitialized = true
+
+        if (!this.observer) {
+            this.observer = new MutationObserver(this.handleMutation)
+            this.observer?.observe(this, MutationObserverConfig.observerOptions)
+        }
     }
 
     #getAllTreeItems(): TreeItem[] {
@@ -341,8 +350,11 @@ export class Tree extends BaseElement {
 
     #syncDescendantCheckboxes(treeItem: TreeItem, selected: boolean) {
         for (const child of treeItem.getChildren({ includeDisabled: false })) {
-            child.selected = selected
-            child.indeterminate = false
+            if (child.selectable) {
+                child.selected = selected
+                child.indeterminate = false
+            }
+
             this.#syncDescendantCheckboxes(child, selected)
         }
     }
@@ -352,7 +364,10 @@ export class Tree extends BaseElement {
 
         if (parentItem) {
             this.#syncParentCheckboxes(parentItem)
-            this.#syncAncestorCheckboxes(parentItem)
+
+            if (parentItem.selectable) {
+                this.#syncAncestorCheckboxes(parentItem)
+            }
         }
     }
 
@@ -363,15 +378,17 @@ export class Tree extends BaseElement {
             const totalChecked = children.filter(item => item.selected && !item.indeterminate)
             const totalIndeterminate = children.filter(item => item.indeterminate)
 
-            if (totalChecked.length === children.length) {
-                treeItem.selected = true
-                treeItem.indeterminate = false
-            } else if (totalChecked.length === 0 && totalIndeterminate.length === 0) {
-                treeItem.selected = false
-                treeItem.indeterminate = false
-            } else {
-                treeItem.selected = false
-                treeItem.indeterminate = true
+            if (treeItem.selectable) {
+                if (totalChecked.length === children.length) {
+                    treeItem.selected = true
+                    treeItem.indeterminate = false
+                } else if (totalChecked.length === 0 && totalIndeterminate.length === 0) {
+                    treeItem.selected = false
+                    treeItem.indeterminate = false
+                } else {
+                    treeItem.selected = false
+                    treeItem.indeterminate = true
+                }
             }
         }
     }
