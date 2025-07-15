@@ -23,7 +23,6 @@ export class TreeItem extends BaseElement {
     @state() collapsible: boolean = this.hasChildren
     @state() indeterminate: boolean = false
     @state() selectable: boolean = false
-
     @state() showCheckbox: boolean = false
 
     @property({ type: Boolean, reflect: true }) expanded = false
@@ -85,8 +84,14 @@ export class TreeItem extends BaseElement {
                     'base': true,
                     'is-collapsible': this.collapsible,
                     'not-collapsible': !this.collapsible,
+                    'is-expanded': this.expanded,
+                    'not-expanded': !this.expanded,
                     'is-selectable': this.selectable,
                     'not-selectable': !this.selectable,
+                    'is-selected': this.selected,
+                    'not-selected': !this.selected,
+                    'is-indeterminate': this.indeterminate,
+                    'not-indeterminate': !this.indeterminate,
                 })}"
                 part="${generateMods('base', this.#state)}"
             >
@@ -109,23 +114,13 @@ export class TreeItem extends BaseElement {
                         <span class="toggle" part="toggle" aria-hidden="true"></span>
                     `)}
                     ${when(this.showCheckbox, () => html`
-                        <div
-                            class="checkbox-label"
-                            part="checkbox-label"
-                            aria-hidden="true"
-                        >
-                            <input
-                                part="checkbox"
-                                class="checkbox"
-                                type="checkbox"
-                                name
-                                id
-                                .checked="${this.selected}"
-                                .indeterminate="${this.indeterminate}"
-                                @change="${this.#handleCheckboxChange}"
-                                ?disabled="${this.disabled}"
-                                tabindex="-1"
-                            >
+                        <div class="checkbox" part="${generateMods('checkbox', this.#state)}" aria-hidden="true">
+                            <slot class="checkbox-icon checkbox-icon--checked" name="checked-icon">
+                                <wui-icon name="check" library="wui-system"></wui-icon>
+                            </slot>
+                            <slot class="checkbox-icon checkbox-icon--indeterminate" name="indeterminate-icon">
+                                <wui-icon name="minus" library="wui-system"></wui-icon>
+                            </slot>
                         </div>
                     `)}
                     <div class="content" part="${generateMods('content', this.#state)}">
@@ -167,17 +162,15 @@ export class TreeItem extends BaseElement {
             'expanded': this.expanded,
             'selectable': this.selectable,
             'selected': this.selected,
+            'indeterminate': this.indeterminate,
             'disabled': this.disabled,
+            'nested': this.isNested,
+            'has-children': this.hasChildren,
         }
     }
 
-    #toggleExpanded(event: MouseEvent) {
+    #toggleExpanded(event: Event) {
         event.stopPropagation()
         this.expanded = !this.expanded
-    }
-
-    #handleCheckboxChange(event: Event) {
-        event.stopPropagation()
-        this.selected = (event.target as HTMLInputElement).checked
     }
 }
