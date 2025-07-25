@@ -1,6 +1,6 @@
 {
   "name": "@wulfe/ui-components",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -20,6 +20,8 @@
     "./tab": "./dist/tab.js",
     "./tab-group": "./dist/tab-group.js",
     "./tab-panel": "./dist/tab-panel.js",
+    "./tree": "./dist/tree.js",
+    "./tree-item": "./dist/tree-item.js",
     "./utils/*": "./dist/utils/*.js"
   },
   "type": "module",
