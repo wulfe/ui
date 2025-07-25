@@ -14,6 +14,8 @@ export default defineConfig({
                 'tab': resolve(__dirname, 'src/tab/index.ts'),
                 'tab-group': resolve(__dirname, 'src/tab-group/index.ts'),
                 'tab-panel': resolve(__dirname, 'src/tab-panel/index.ts'),
+                'tree': resolve(__dirname, 'src/tree/index.ts'),
+                'tree-item': resolve(__dirname, 'src/tree-item/index.ts'),
                 'utils/icon': resolve(__dirname, 'src/utils/icon.ts'),
             },
             formats: ['es'],

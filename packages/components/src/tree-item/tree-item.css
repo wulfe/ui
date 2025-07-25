@@ -1,0 +1,126 @@
+:host {
+    outline: 0 !important;
+}
+
+:host(:focus-visible) .item {
+    outline-width: var(--wui-focus-ring-width, 2px);
+    outline-offset: var(--wui-focus-ring-offset, 1px);
+    outline-style: var(--wui-focus-ring-style, solid);
+    outline-color: var(--wui-focus-ring-color, currentColor);
+    box-shadow: var(--wui-focus-ring-shadow, none);
+    z-index: 2;
+}
+
+:host(:not([expanded])) .children {
+    display: none;
+}
+
+:host([expanded]) slot[name=expand-icon],
+:host(:not([expanded])) slot[name=collapse-icon] {
+    display: none;
+}
+
+:host([selected]) .item {
+    color: var(--wui-tree-item-text-selected);
+    background: var(--wui-tree-item-background-selected, silver);
+}
+
+:host([disabled]) .item {
+    --wui-tree-item-cursor: var(--wui-tree-item-cursor-disabled, not-allowed);
+}
+
+.base {
+    user-select: none;
+    position: relative;
+}
+
+.item {
+    --wui-tree-item-gutter: calc((var(--wui-tree-item-level) - 1) * var(--wui-tree-item-toggle-width, 1.5rem));
+    cursor: var(--wui-tree-item-cursor, default);
+    display: flex;
+    align-items: var(--wui-tree-item-align-items, start);
+    justify-content: var(--wui-tree-item-justify-content, space-between);
+    gap: var(--wui-tree-item-gap, 0);
+    position: relative;
+    padding-inline-start: var(--wui-tree-item-gutter);
+    inline-size: var(--wui-tree-item-width, 100%);
+    text-align: var(--wui-tree-item-text-align, start);
+}
+
+.content {
+    flex: 1 1 0%;
+    display: block;
+    max-inline-size: 100%;
+    overflow: hidden;
+}
+
+.toggle {
+    cursor: var(--wui-tree-item-toggle-cursor, default);
+    display: flex;
+    align-items: var(--wui-tree-item-toggle-align-items, center);
+    justify-content: var(--wui-tree-item-toggle-justify-content, center);
+    inline-size: var(--wui-tree-item-toggle-width, 1.5rem);
+    block-size: var(--wui-tree-item-toggle-height, 1.5rem);
+}
+
+.toggle-icon {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+.base.not-collapsible .toggle-icon {
+    display: none;
+}
+
+.children {
+    position: relative;
+}
+
+.checkbox {
+    appearance: none;
+    padding: 0;
+    print-color-adjust: exact;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-origin: border-box;
+    user-select: none;
+    flex-shrink: 0;
+    position: relative;
+    inset-block-start: var(--wui-tree-item-checkbox-offset, 4px);
+    height: var(--wui-tree-item-checkbox-width, 1em);
+    width: var(--wui-tree-item-checkbox-height, 1em);
+    color: var(--wui-tree-item-checkbox-color);
+    background: var(--wui-tree-item-checkbox-background);
+    border-color: var(--wui-tree-item-checkbox-border-color);
+    border-width: var(--wui-tree-item-checkbox-border-width, 1px);
+    border-radius: var(--wui-tree-item-checkbox-radius, 0);
+}
+
+.checkbox-icon {
+    --wui-icon-width: calc(var(--wui-tree-item-checkbox-width, 1em) - calc(var(--wui-tree-item-checkbox-border-width, 1px) * 2));
+    --wui-icon-height: calc(var(--wui-tree-item-checkbox-height, 1em) - calc(var(--wui-tree-item-checkbox-border-width, 1px) * 2));
+    display: none;
+}
+
+.base.is-selected .checkbox {
+    color: var(--wui-tree-item-checkbox-color-selected);
+    background: var(--wui-tree-item-checkbox-background-selected);
+    border-color: var(--wui-tree-item-checkbox-border-color-selected);
+}
+
+.base.is-selected .checkbox-icon--checked {
+    display: flex;
+}
+
+.base.is-indeterminate .checkbox {
+    color: var(--wui-tree-item-checkbox-color-indeterminate);
+    background: var(--wui-tree-item-checkbox-background-indeterminate);
+    border-color: var(--wui-tree-item-checkbox-border-color-indeterminate);
+}
+
+.base.is-indeterminate .checkbox-icon--indeterminate {
+    display: flex;
+}
